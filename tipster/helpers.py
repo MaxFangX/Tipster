@@ -6,9 +6,8 @@ def partition_integer_by_weights(integer, split):
     Given an integer and a dictionary of strings and their corresponding weights,
     return a dictionary of their best fit integer partition, including the remainder
 
-    >>> cs = CurrencyService()
     >>> split = {'max': 4, 'philip': 3}
-    >>> cs.partition_integer_by_weights(16, **split)
+    >>> partition_integer_by_weights(16, **split)
     {'max': 9, 'philip': 6, 'remainder': 1}
     """
 

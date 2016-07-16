@@ -72,6 +72,9 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, default='visible', choices=POST_STATUS_CHOICES)
 
+    def score(self):
+        return self.upvote_set.count()
+
 
 class Upvote(models.Model):
 
@@ -94,8 +97,8 @@ class Upvote(models.Model):
             self.disburse_tip()
 
     def has_enough_funds(self):
-        if self.user.profile.get_net_balance() - self.amount > 0 and\
-                self.amount > Upvote.objects.filter(post=self.post, id__lt=self.id).count():
+        if self.user.profile.get_net_balance() - self.amount > 0 and \
+                self.amount > Upvote.objects.filter(post=self.post, index__lt=self.index).count():
             return True
         else:
             return False
