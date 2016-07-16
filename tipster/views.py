@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from tipster.models import Post, Profile, Upvote
+from tipster.models import Post, Profile
 
 
 def index(request):
@@ -51,12 +51,8 @@ def upvote(request, pk):
         raise Exception("Must be logged in to upvote")
 
     post = Post.objects.get(id=pk)
-    existing_upvotes = Upvote.objects.filter(post=post).count()
     amount = int(request.GET.get('amount', 0))
-    Upvote(post=post,
-           user=request.user,
-           index=existing_upvotes + 1,
-           amount=amount).save()
+    post.upvote(request.user, amount)
 
     return HttpResponseRedirect("/")
 
@@ -73,5 +69,6 @@ def create_post(request):
              title=title,
              link=link)
     p.save()
+    p.upvote(request.user, 100)  # Costs 100 satoshi to post
 
     return HttpResponseRedirect("/")

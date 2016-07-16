@@ -87,6 +87,13 @@ class Post(models.Model):
             return 0
         return qs.aggregate(value=Sum(F('amount'))).get('value', 0)
 
+    def upvote(self, user, amount):
+        existing_upvotes = Upvote.objects.filter(post=self).count()
+        Upvote(post=self,
+               user=user,
+               index=existing_upvotes + 1,
+               amount=amount).save()
+
 
 class Upvote(models.Model):
 
@@ -124,6 +131,11 @@ class Upvote(models.Model):
             raise Exception("Not enough funds")
 
         tipsters = Upvote.objects.filter(post=self.post, id__lt=self.id)
+
+        if tipsters.count() == 0:
+            # TODO take as fees
+            return
+
         weights = {}
         for tipster in tipsters:
             weights[tipster.id] = tipster.amount
