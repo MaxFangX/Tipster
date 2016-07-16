@@ -1,4 +1,5 @@
 from django.db import models, transaction
+from django.db.models import F, Sum
 from django.contrib.auth.models import User
 from django.contrib import admin
 from tipster.helpers import partition_integer_by_weights
@@ -78,6 +79,13 @@ class Post(models.Model):
 
     def __str__(self):
         return "{} by {}".format(self.id, self.curator)
+
+    @property
+    def value(self):
+        qs = Upvote.objects.filter(post=self)
+        if qs.count() <= 0:
+            return 0
+        return qs.aggregate(value=Sum(F('amount'))).get('value', 0)
 
 
 class Upvote(models.Model):

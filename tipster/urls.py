@@ -23,7 +23,8 @@ urlpatterns = [
     url(r'^login/$', views.login, name='login'),
     url(r'^buy/$', views.buy, name='buy'),
     url(r'u/(?P<username>[a-zA-Z0-9]+)/$', views.profile, name='profile'),
-    url(r'^upvote/(?P<pk>[0-9]+)/?$', views.upvote, name='buy'),
+    url(r'^upvote/(?P<pk>[0-9]+)/?$', views.upvote, name='upvote'),
+    url(r'^create-post/$', views.create_post, name='create_post'),
 
     url(r'^$', views.index, name='index'),
 ]

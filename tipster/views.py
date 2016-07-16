@@ -5,7 +5,8 @@ from tipster.models import Post, Profile, Upvote
 
 
 def index(request):
-    posts = Post.objects.order_by('created_at')[:25]
+    posts = Post.objects.all()[:25]
+    posts = sorted(posts, key=lambda p: p.value, reverse=True)
     profile = Profile.objects.get(user=request.user)
     return render_to_response(
         template_name='index.html',
@@ -53,5 +54,21 @@ def upvote(request, pk):
            user=request.user,
            index=existing_upvotes + 1,
            amount=amount).save()
+
+    return HttpResponseRedirect("/")
+
+
+def create_post(request):
+
+    if not request.user.is_authenticated():
+        raise Exception("Must be logged in to post")
+
+    title = request.GET.get('title', "(No title)")
+    link = request.GET.get('link', "http://maxfa.ng")
+
+    p = Post(curator=request.user,
+             title=title,
+             link=link)
+    p.save()
 
     return HttpResponseRedirect("/")
