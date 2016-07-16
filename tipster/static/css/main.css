@@ -55,6 +55,10 @@ a {
   padding-right: 0.75em;
 }
 
+.headerlinks a .upvote, .headerlinks a .score {
+  display: inline-block;
+}
+
 #inside {
   margin-left: 0.25em;
   margin-right: 0.25em;
@@ -143,6 +147,10 @@ a {
   text-decoration: none;
 }
 
+.by a:hover {
+  text-decoration: underline;
+}
+
 #nextpage {
   margin-top: 1.5em;
   margin-left: 40px;
@@ -153,4 +161,26 @@ a {
   color: #666;
   font-weight: bold;
   text-decoration: none;
+}
+
+#login, #buy, #profile {
+  margin-left: 40px;
+}
+
+#login h3 {
+  color: #333;
+  font-weight: bold;
+}
+
+.coinbase_login {
+  color: #fff;
+  padding: 1em 2em;
+  line-height: 0;
+  background-image: linear-gradient(#1d90cb, #0e86c4);
+  border: none;
+  font-size: 10pt;
+  text-transform: uppercase;
+  height: 42px;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
 }

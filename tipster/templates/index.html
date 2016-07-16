@@ -1,73 +1,65 @@
-{% load staticfiles %}
-<!doctype html>
-<html class="no-js" lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Tipster</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends 'base.html' %}
 
-    <link rel="stylesheet" href="{% static "css/normalize.css" %}">
-    <link rel="stylesheet" href="{% static "css/main.css" %}">
-  </head>
-  <body>
-    <div id="wrapper">
-      <div id="header">
-        <div id="headerleft">
-          <a id="t_holder" href="/"></a>
-          <span class="headerlinks">
-            <a href="/" class="cur_url">Tipster</a>
-            <a href="/recent" >Recent</a>
-            <a href="/comments" >Comments</a>
-            <a href="/search" >Search</a>
-          </span>
-        </div>
-
-        <div id="headerright">
-          <span class="headerlinks">
-            <a href="/login">Login</a>
-          </span>
-        </div>
-
-        <div class="clear"></div>
-      </div>
-
-      <div id="inside">
-        <ol class="posts">
-        {% for post in posts %}
-          <li class="post">
-            <div class="post_line">
-              <div class="votes">
-                <a class="upvote"></a>
-                <div class="score">{{ post.score }}</div>
-              </div>
-              <div class="details">
-                <span class="link">
-                  <a href="{{ post.url }}">{{ post.title }}</a>
-                </span>
-                <span class="domain">
-                  {{ post.domain }}
-                </span>
-                <div class="by">
-                  by
-                  <a href="/u/{{ post.curator }}">{{ post.curator }}</a>
-                  {{ post.creation_date }} ago |
-                  <a>hide</a> |
-                  <a>{{ post.num_comments }} comments</a>
-                </div>
-              </div>
-            </div>
-          </li>
-        {% endfor %}
-        </ol>
-
-        <div id="nextpage">
-          <a href="/page/2">Page 2 >></a>
-        </div>
-      </div>
+{% block content %}
+  <div id="header">
+    <div id="headerleft">
+      <a id="t_holder" href="/"></a>
+      <span class="headerlinks">
+        <a href="/" class="cur_url">Tipster</a>
+        <a href="/recent" >Recent</a>
+        <a href="/comments" >Comments</a>
+        <a href="/search" >Search</a>
+      </span>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  </body>
-</html>
+    <div id="headerright">
+      <span class="headerlinks">
+      {% if user %}
+        <a href="/u/{{ user.username }}">{{ user.username }}</a>
+        <a href="/buy">
+          <span class="upvote"></span>
+          <div class="score">{{ user.upvotes }}</div>
+        </a>
+      {% else %}
+        <a href="/">Login</a>
+      {% endif %}
+      </span>
+    </div>
+
+    <div class="clear"></div>
+  </div>
+
+  <div id="inside">
+    <ol class="posts">
+    {% for post in posts %}
+      <li class="post">
+        <div class="post_line">
+          <div class="votes">
+            <a class="upvote"></a>
+            <div class="score">{{ post.score }}</div>
+          </div>
+          <div class="details">
+            <span class="link">
+              <a href="{{ post.url }}">{{ post.title }}</a>
+            </span>
+            <span class="domain">
+              {{ post.domain }}
+            </span>
+            <div class="by">
+              by
+              <a href="/u/{{ post.curator }}">{{ post.curator }}</a>
+              {{ post.creation_date }} ago |
+              <a>hide</a> |
+              <a>{{ post.num_comments }} comments</a>
+            </div>
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+    </ol>
+
+    <div id="nextpage">
+      <a href="/page/2">Page 2 >></a>
+    </div>
+  </div>
+{% endblock %}

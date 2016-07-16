@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div id="header">
+    <div id="headerleft">
+      <a id="t_holder" href="/"></a>
+      <span class="headerlinks">
+        <a href="/" class="cur_url">Tipster</a>
+      </span>
+    </div>
+
+    <div id="headerright">
+      <span class="headerlinks">
+      <a href="/u/{{ user.username }}">{{ user.username }}</a>
+      <a href="/buy">
+        <span class="upvote"></span>
+        <div class="score">{{ user.upvotes }}</div>
+      </a>
+      </span>
+    </div>
+
+    <div class="clear"></div>
+  </div>
+
+  <div id="inside">
+    <div id="profile">
+      <h3>{{ profile.username }}</h3>
+      {% if user.username == profile.username %}
+      <button class="coinbase_login">Cash Out Upvotes</button>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

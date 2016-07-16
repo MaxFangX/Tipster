@@ -1,12 +1,11 @@
 from django.db import models, transaction
 from django.contrib.auth.models import User
+from django.contrib import admin
 from tipster.helpers import partition_integer_by_weights
 
 # TODO create new type of UserException that can be exposed to the user
 
-
 class Profile(models.Model):
-
     user = models.OneToOneField(User)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -19,8 +18,8 @@ class Profile(models.Model):
         """
         deposits = Deposit.objects.filter(user=self.user, status='accepted')
         withdrawals = Withdrawal.objects.filter(user=self.user, status='executed')
-        deposit_total = reduce(lambda x, y: x.amount + y.amount, deposits, 0)
-        withdrawal_total = reduce(lambda x, y: x.amount + y.amount, withdrawals, 0)
+        deposit_total = sum(map(lambda d: d.amount, deposits))
+        withdrawal_total = sum(map(lambda w: w.amount, withdrawals))
         return self.upvote_balance + deposit_total - withdrawal_total
 
     def recalculate_upvote_balance(self):
@@ -121,3 +120,10 @@ class Upvote(models.Model):
 
         self.has_disbursed = True
         self.save()
+
+
+admin.site.register(Profile)
+admin.site.register(Deposit)
+admin.site.register(Withdrawal)
+admin.site.register(Post)
+admin.site.register(Upvote)
