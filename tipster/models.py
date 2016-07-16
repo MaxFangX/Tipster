@@ -5,11 +5,12 @@ from tipster.helpers import partition_integer_by_weights
 
 # TODO create new type of UserException that can be exposed to the user
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    upvote_balance = models.BigIntegerField(help_text="The balance from upvotes only")
+    upvote_balance = models.BigIntegerField(default=0, help_text="The balance from upvotes only")
 
     def get_net_balance(self):
         """
@@ -67,10 +68,13 @@ class Post(models.Model):
     )
 
     curator = models.ForeignKey(User)
-    link = models.URLField()
     title = models.CharField(max_length=300)
+    link = models.URLField()
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=50, default='visible', choices=POST_STATUS_CHOICES)
+
+    def __str__(self):
+        return "{} by {}".format(self.id, self.curator)
 
 
 class Upvote(models.Model):
