@@ -18,25 +18,38 @@ class Profile(models.Model):
         pass
 
     def recalculate_upvote_balance(self):
-        # Can insert validation checks here
+        # NOTE Can insert validation checks here
         pass
 
 
-# class Deposit(models.Model):
-#     DEPOSIT_STATUS_CHOICES = (
-#         ('submitted', 'Submitted'),
-#         ('approved', 'Approved'),
-#         ('executed', 'Executed'),
-#     )
-#     profile = models.ForeignKey(Profile)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     modified_at = models.DateTimeField(auto_now=True)
-#     status = models.CharField(max_length=50, default='submitted', choices=DEPOSIT_STATUS_CHOICES)
+class Deposit(models.Model):
+
+    DEPOSIT_STATUS_CHOICES = (
+        ('received', 'Received'),
+        ('accepted', 'Accepted'),
+    )
+
+    user = models.ForeignKey(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    # NOTE change default to received
+    status = models.CharField(max_length=50, default='accepted', choices=DEPOSIT_STATUS_CHOICES)
+    amount = models.IntegerField()
 
 
-# class Withdrawal(models.Model):
-#     profile = models.ForeignKey(Profile)
-#     created_at = models.DateTimeField(auto_now_add=True)
+class Withdrawal(models.Model):
+
+    WITHDRAWAL_STATUS_CHOICES = (
+        ('submitted', 'Submitted'),
+        ('approved', 'Approved'),
+        ('executed', 'Executed'),
+    )
+
+    user = models.ForeignKey(User)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=50, default='submitted', choices=WITHDRAWAL_STATUS_CHOICES)
+    amount = models.IntegerField()
 
 
 class Post(models.Model):
