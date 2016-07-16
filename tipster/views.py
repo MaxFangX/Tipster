@@ -9,8 +9,8 @@ def index(request):
     posts = sorted(posts, key=lambda p: p.value, reverse=True)
     context = {'posts': posts, 'user': request.user, }
     if request.user.is_authenticated():
-        profile = Profile.objects.get(user=request.user)
-        context['profile'] = profile
+        _profile = Profile.objects.get(user=request.user)
+        context['profile'] = _profile
     return render_to_response(
         template_name='index.html',
         context=context)
@@ -30,10 +30,10 @@ def buy(request):
 
 def profile(request, username):
     user = User.objects.get(username='phlip9')
-    profile = Profile.objects.get(user=user)
+    _profile = Profile.objects.get(user=user)
     return render_to_response(
         template_name='profile.html',
-        context = {'user': user, 'profile': profile})
+        context = {'user': user, 'profile': _profile})
 
 
 def cashout(request):
@@ -46,7 +46,6 @@ def coinbase(request):
 
 
 def upvote(request, pk):
-
     if not request.user.is_authenticated():
         raise Exception("Must be logged in to upvote")
 
@@ -58,7 +57,6 @@ def upvote(request, pk):
 
 
 def create_post(request):
-
     if not request.user.is_authenticated():
         raise Exception("Must be logged in to post")
 
@@ -72,3 +70,10 @@ def create_post(request):
     p.upvote(request.user, 100)  # Costs 100 satoshi to post
 
     return HttpResponseRedirect("/")
+
+def submit(request):
+    user = User.objects.get(username='phlip9')
+    _profile = Profile.objects.get(user=user)
+    return render_to_response(
+        template_name='submit.html',
+        context={ 'user': user, 'profile': _profile })

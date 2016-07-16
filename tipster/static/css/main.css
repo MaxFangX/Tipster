@@ -161,6 +161,47 @@ a {
   text-decoration: underline;
 }
 
+.amount_wrapper {
+  margin-left: 40px;
+  margin-top: 0.5em;
+}
+
+input.amount {
+  text-align: right;
+  width: 5em;
+}
+
+input.amount_submit {
+
+}
+
+.text_field {
+  padding: 3px 2px;
+  color: #333;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  font-size: 10pt;
+}
+
+.submit_button {
+  transition: all 1.5s;
+  color: #333;
+  background-color: #fff;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  padding: 2px 7px;
+  font-size: 10pt;
+  line-height: 1.428571429;
+  border-radius: 2px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 #nextpage {
   margin-top: 1.5em;
   margin-left: 40px;
@@ -223,4 +264,18 @@ a {
 .delay {
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
+}
+
+.hide {
+  display: none;
+}
+
+#submit_box {
+  margin-left: 40px;
+}
+
+#submit_box input {
+  display: block;
+  margin-bottom: 0.5em;
+  padding-left: 2px;
 }

@@ -25,6 +25,6 @@ urlpatterns = [
     url(r'u/(?P<username>[a-zA-Z0-9]+)/$', views.profile, name='profile'),
     url(r'^upvote/(?P<pk>[0-9]+)/?$', views.upvote, name='upvote'),
     url(r'^create-post/$', views.create_post, name='create_post'),
-
+    url(r'^submit/$', views.submit, name='submit'),
     url(r'^$', views.index, name='index'),
 ]

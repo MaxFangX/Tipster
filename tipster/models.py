@@ -75,7 +75,7 @@ class Post(models.Model):
     status = models.CharField(max_length=50, default='visible', choices=POST_STATUS_CHOICES)
 
     def score(self):
-        return self.upvote_set.count()
+        return sum(map(lambda u: u.amount, self.upvote_set.all()))
 
     def __str__(self):
         return "{} by {}".format(self.id, self.curator)

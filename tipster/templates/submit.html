@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div id="header" class="animated fadeInDown">
+    <div id="headerleft">
+      <a id="t_holder" href="/"></a>
+      <span class="headerlinks">
+        <a href="/" class="cur_url">Tipster</a>
+      </span>
+    </div>
+
+    <div id="headerright">
+      <span class="headerlinks">
+      {% if user %}
+        <a href="/u/{{ user.username }}">{{ user.username }}</a>
+        <a href="/buy">
+          <span class="upvote"></span>
+          <div class="score">{{ profile.upvote_balance }}</div>
+        </a>
+      {% else %}
+        <a href="/admin">Login</a>
+      {% endif %}
+      </span>
+    </div>
+
+    <div class="clear"></div>
+  </div>
+
+  <div id="submit_box" class="animated fadeInDown delay">
+    <input type="text" id="submit_title" class="text_field" placeholder="title">
+    <input type="text" id="submit_link" class="text_field" placeholder="link">
+    <input type="submit" id="submit_button" class="submit_button">
+  </div>
+{% endblock %}
