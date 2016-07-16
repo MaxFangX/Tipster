@@ -5,6 +5,7 @@ from tipster.helpers import partition_integer_by_weights
 
 # TODO create new type of UserException that can be exposed to the user
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User)
     created_at = models.DateTimeField(auto_now_add=True)
