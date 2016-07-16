@@ -1,5 +1,8 @@
-from django.db import models
+from django.db import models, transaction
 from django.contrib.auth.models import User
+from tipster.helpers import partition_integer_by_weights
+
+# TODO create new type of UserException that can be exposed to the user
 
 
 class Profile(models.Model):
@@ -14,11 +17,14 @@ class Profile(models.Model):
         Returns the net balance of the account, taking deposits and
         withdrawals into account
         """
-        # TODO implement
-        pass
+        deposits = Deposit.objects.filter(user=self.user, status='accepted')
+        withdrawals = Withdrawal.objects.filter(user=self.user, status='executed')
+        deposit_total = reduce(lambda x, y: x.amount + y.amount, deposits, 0)
+        withdrawal_total = reduce(lambda x, y: x.amount + y.amount, withdrawals, 0)
+        return self.upvote_balance + deposit_total - withdrawal_total
 
     def recalculate_upvote_balance(self):
-        # NOTE Can insert validation checks here
+        # TODO Can insert validation checks here
         pass
 
 
@@ -32,7 +38,7 @@ class Deposit(models.Model):
     user = models.ForeignKey(User)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    # NOTE change default to received
+    # TODO change default to received
     status = models.CharField(max_length=50, default='accepted', choices=DEPOSIT_STATUS_CHOICES)
     amount = models.IntegerField()
 
@@ -42,6 +48,7 @@ class Withdrawal(models.Model):
     WITHDRAWAL_STATUS_CHOICES = (
         ('submitted', 'Submitted'),
         ('approved', 'Approved'),
+        ('denied', 'Denied'),
         ('executed', 'Executed'),
     )
 
@@ -76,22 +83,41 @@ class Upvote(models.Model):
     has_disbursed = models.BooleanField()
 
     def save(self, *args, **kwargs):
-        if self.amount < 0:
-            raise Exception("Amount can't be less than 0")
-
-        created = True if not self.pk else False
-        if created:
-            self.has_disbursed = False
+        if not kwargs.get('skip_validation'):
+            if not self.has_enough_funds():
+                raise Exception("Not enough funds")
+            if self.amount < 0:
+                raise Exception("Insufficient amount")
 
         super(Upvote, self).save(*args, **kwargs)
 
-        if created:
+        if not self.has_disbursed:
             self.disburse_tip()
+
+    def has_enough_funds(self):
+        if self.user.profile.get_net_balance() - self.amount > 0 and\
+                self.amount > Upvote.objects.filter(post=self.post, id__lt=self.id).count():
+            return True
+        else:
+            return False
 
     def disburse_tip(self):
         if self.has_disbursed:
             raise Exception("Already disbursed")
+        if not self.has_enough_funds():
+            raise Exception("Not enough funds")
 
-        # TODO check net balance
+        tipsters = Upvote.objects.filter(post=self.post, id__lt=self.id)
+        weights = {}
+        for tipster in tipsters:
+            weights[tipster.id] = tipster.amount
 
-        # TODO implement
+        with transaction.atomic():
+            partition = partition_integer_by_weights(self.amount, weights)
+            for tipster_id, share in partition:
+                tipster = tipsters.get(id=tipster_id)
+                tipster.amount += share
+                tipster.save(skip_validation=True)  # FIXME test
+
+        self.has_disbursed = True
+        self.save()
