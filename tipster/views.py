@@ -7,10 +7,13 @@ from tipster.models import Post, Profile, Upvote
 def index(request):
     posts = Post.objects.all()[:25]
     posts = sorted(posts, key=lambda p: p.value, reverse=True)
-    profile = Profile.objects.get(user=request.user)
+    context = {'posts': posts, 'user': request.user, }
+    if request.user.is_authenticated():
+        profile = Profile.objects.get(user=request.user)
+        context['profile'] = profile
     return render_to_response(
         template_name='index.html',
-        context={'posts': posts, 'user': request.user, 'profile': profile})
+        context=context)
 
 
 def login(request):

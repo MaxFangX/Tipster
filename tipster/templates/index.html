@@ -15,14 +15,14 @@
 
     <div id="headerright">
       <span class="headerlinks">
-      {% if user %}
+      {% if request.user.is_authenticated %}
         <a href="/u/{{ user.username }}">{{ user.username }}</a>
         <a href="/buy">
           <span class="upvote"></span>
           <div class="score">{{ profile.upvote_balance }}</div>
         </a>
       {% else %}
-        <a href="/">Login</a>
+        <a href="/admin">Login</a>
       {% endif %}
       </span>
     </div>
