@@ -1,15 +1,15 @@
+from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from tipster.models import Post, Profile, Upvote
-from django.contrib.auth.models import User
 
 
 def index(request):
     posts = Post.objects.order_by('created_at')[:25]
-    user = User.objects.get(username='phlip9')
-    profile = Profile.objects.get(user=user)
+    profile = Profile.objects.get(user=request.user)
     return render_to_response(
         template_name='index.html',
-        context={'posts': posts, 'user': user, 'profile': profile})
+        context={'posts': posts, 'user': request.user, 'profile': profile})
 
 
 def login(request):
@@ -48,12 +48,10 @@ def upvote(request, pk):
 
     post = Post.objects.get(id=pk)
     existing_upvotes = Upvote.objects.filter(post=post).count()
-    amount = request.data.get('amount', 0)
+    amount = int(request.GET.get('amount', 0))
     Upvote(post=post,
            user=request.user,
            index=existing_upvotes + 1,
            amount=amount).save()
 
-    return render_to_response(
-        template_name='index.html',
-        context={})
+    return HttpResponseRedirect("/")

@@ -89,11 +89,13 @@ class Upvote(models.Model):
     has_disbursed = models.BooleanField()
 
     def save(self, *args, **kwargs):
-        if not kwargs.get('skip_validation'):
-            if not self.has_enough_funds():
-                raise Exception("Not enough funds")
-            if self.amount < 0:
-                raise Exception("Insufficient amount")
+        if not self.has_enough_funds():
+            raise Exception("Not enough funds")
+        if self.amount < 0:
+            raise Exception("Insufficient amount")
+
+        if not self.pk:
+            self.has_disbursed = False
 
         super(Upvote, self).save(*args, **kwargs)
 
@@ -120,10 +122,15 @@ class Upvote(models.Model):
 
         with transaction.atomic():
             partition = partition_integer_by_weights(self.amount, weights)
-            for tipster_id, share in partition:
-                tipster = tipsters.get(id=tipster_id)
-                tipster.amount += share
-                tipster.save(skip_validation=True)  # FIXME test
+            upvoter_profile = self.user.profile
+            upvoter_profile.upvote_balance -= self.amount
+            upvoter_profile.save()
+            for tipster_id, share in partition.iteritems():
+                if tipster_id == 'remainder':
+                    continue
+                tipster_profile = tipsters.get(id=tipster_id).user.profile
+                tipster_profile.upvote_balance += share
+                tipster_profile.save()
 
         self.has_disbursed = True
         self.save()
