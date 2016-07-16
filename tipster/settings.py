@@ -58,7 +58,7 @@ ROOT_URLCONF = 'tipster.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['tipster/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
