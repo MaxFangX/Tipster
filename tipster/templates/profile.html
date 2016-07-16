@@ -14,7 +14,7 @@
       <a href="/u/{{ user.username }}">{{ user.username }}</a>
       <a href="/buy">
         <span class="upvote"></span>
-        <div class="score">{{ user.upvotes }}</div>
+        <div class="score">{{ profile.upvote_balance }}</div>
       </a>
       </span>
     </div>
@@ -25,8 +25,8 @@
   <div id="inside">
     <div id="profile">
       <h3>{{ profile.username }}</h3>
-      {% if user.username == profile.username %}
-      <button class="coinbase_login">Cash Out Upvotes</button>
+      {% if user == profile.user %}
+      <a href="/"><button class="coinbase_login">Cash Out Upvotes</button></a>
       {% endif %}
     </div>
   </div>

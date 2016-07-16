@@ -5,7 +5,6 @@ from tipster.models import *
 def index(request):
     posts = Post.objects.order_by('created_at')[:25]
     user = User.objects.get(username='phlip9')
-    print(posts[0].created_at)
     _profile = Profile.objects.get(user=user)
     return render_to_response(
         template_name='index.html',
@@ -22,16 +21,11 @@ def buy(request):
         context={})
 
 def profile(request, username):
-    user = {
-        'username': 'phlip9',
-        'upvotes': 25
-    }
-    profile = {
-        'username': 'phlip9'
-    }
+    user = User.objects.get(username='phlip9')
+    _profile = Profile.objects.get(user=user)
     return render_to_response(
         template_name='profile.html',
-        context={ 'user': user, 'profile': profile })
+        context={ 'user': user, 'profile': _profile })
 
 def cashout(request):
     print('cashout')
